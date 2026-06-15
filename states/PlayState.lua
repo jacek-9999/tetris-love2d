@@ -82,9 +82,12 @@ function PlayState:handleDrop(dt)
 end
 
 function PlayState:handleLocking()
-    if self.isLocking and self.lockTimer >= constants.GAME.LOCK_DELAY then
-        print(string.format("[DEBUG] Lock delay reached: %.2f seconds", self.lockTimer))
-        self:lockPiece()
+    if self.isLocking then
+        self.lockTimer = self.lockTimer + love.timer.getDelta()
+        if self.lockTimer >= constants.GAME.LOCK_DELAY then
+            print(string.format("[DEBUG] Lock delay reached: %.2f seconds", self.lockTimer))
+            self:lockPiece()
+        end
     end
 end
 
