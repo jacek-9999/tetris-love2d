@@ -132,14 +132,6 @@ function PlayState:lockPiece()
     self.board:lockPiece(self.currentPiece)
     self:processLines()
     self:spawnNextPiece()
-    
-    if not self.currentPiece:isValidPosition(self.board) then
-        self.isGameOver = true
-        print("[DEBUG] Game Over - piece cannot spawn")
-        self.stateMachine:change('gameover')
-    else
-        print(string.format("[DEBUG] Next piece spawned at row=%d, col=%d", self.currentPiece:getBoardRow(), self.currentPiece:getBoardCol()))
-    end
 end
 
 function PlayState:processLines()
@@ -167,7 +159,14 @@ function PlayState:spawnNextPiece()
     self.nextPiece = Pieces.createRandom()
     self.isLocking = false
     self.lockTimer = 0
-    print(string.format("[DEBUG] Next piece ready, score=%d, level=%d, lines=%d", self.score, self.level, self.linesCleared))
+    
+    if not self.currentPiece:isValidPosition(self.board) then
+        self.isGameOver = true
+        print("[DEBUG] Game Over - spawned piece in invalid position")
+        self.stateMachine:change('gameover')
+    else
+        print(string.format("[DEBUG] Next piece ready, score=%d, level=%d, lines=%d", self.score, self.level, self.linesCleared))
+    end
 end
 
 function PlayState:draw()
