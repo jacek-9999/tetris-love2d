@@ -83,6 +83,7 @@ end
 
 function PlayState:handleLocking()
     if self.isLocking and self.lockTimer >= constants.GAME.LOCK_DELAY then
+        print(string.format("[DEBUG] Lock delay reached: %.2f seconds", self.lockTimer))
         self:lockPiece()
     end
 end
@@ -108,6 +109,7 @@ function PlayState:dropPiece()
     if self.isLocking then return end
     
     if not self:movePiece(0, 1) then
+        print(string.format("[DEBUG] Piece hit bottom, starting lock delay (timer=%.2f)", self.lockTimer))
         self.isLocking = true
         self.lockTimer = 0
     end
@@ -123,19 +125,24 @@ function PlayState:hardDrop()
 end
 
 function PlayState:lockPiece()
+    print(string.format("[DEBUG] Locking piece at row=%d, col=%d", self.currentPiece:getBoardRow(), self.currentPiece:getBoardCol()))
     self.board:lockPiece(self.currentPiece)
     self:processLines()
     self:spawnNextPiece()
     
     if not self.currentPiece:isValidPosition(self.board) then
         self.isGameOver = true
+        print("[DEBUG] Game Over - piece cannot spawn")
         self.stateMachine:change('gameover')
+    else
+        print(string.format("[DEBUG] Next piece spawned at row=%d, col=%d", self.currentPiece:getBoardRow(), self.currentPiece:getBoardCol()))
     end
 end
 
 function PlayState:processLines()
     local lines = self.board:clearLines()
     if lines > 0 then
+        print(string.format("[DEBUG] Cleared %d line(s)! Score: %d, Level: %d", lines, self.score, self.level))
         self.linesCleared = self.linesCleared + lines
         self.score = self.score + constants.GAME.POINTS[lines] * self.level
         self:checkLevelUp()
@@ -145,6 +152,7 @@ end
 function PlayState:checkLevelUp()
     local newLevel = math.floor(self.linesCleared / constants.GAME.LINES_PER_LEVEL) + 1
     if newLevel > self.level then
+        print(string.format("[DEBUG] Level up! %d -> %d", self.level, newLevel))
         self.level = newLevel
         self.dropInterval = constants.GAME.INITIAL_DROP_INTERVAL / (1 + (self.level - 1) * 0.15)
     end
@@ -156,6 +164,7 @@ function PlayState:spawnNextPiece()
     self.nextPiece = Pieces.createRandom()
     self.isLocking = false
     self.lockTimer = 0
+    print(string.format("[DEBUG] Next piece ready, score=%d, level=%d, lines=%d", self.score, self.level, self.linesCleared))
 end
 
 function PlayState:draw()
