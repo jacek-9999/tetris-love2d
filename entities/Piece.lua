@@ -68,6 +68,7 @@ function Piece:rotate(board, direction)
 end
 
 function Piece:isValidPosition(board, allowPartialSpawn)
+    if not board then return false end
     local minRow = allowPartialSpawn and -1 or 0
     for r = 1, #self.matrix do
         for c = 1, #self.matrix[r] do
@@ -87,6 +88,7 @@ function Piece:isValidPosition(board, allowPartialSpawn)
 end
 
 function Piece:getGhostPosition(board)
+    if not board then return self.boardRow end
     local ghostRow = self.boardRow
     while true do
         local nextRow = ghostRow + 1
