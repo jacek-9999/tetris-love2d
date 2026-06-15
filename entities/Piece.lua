@@ -75,7 +75,7 @@ function Piece:isValidPosition(board, allowPartialSpawn)
             if self.matrix[r][c] then
                 local row = self.boardRow + r - 1
                 local col = self.boardCol + c - 1
-                if row < minRow or row > board.height or col < 0 or col >= board.width then
+                if row < minRow or row > board.rows or col < 0 or col >= board.cols then
                     return false
                 end
                 if row >= 0 and not board:isCellEmpty(row, col) then
