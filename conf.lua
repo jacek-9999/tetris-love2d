@@ -1,7 +1,7 @@
 -- LÖVE2D Configuration
 function love.conf(t)
     t.title = 'Tetris Clone'
-    t.version = '1.0.0'
+    t.version = '11.5'
     t.author = 'Tetris Clone'
     t.window.width = 600
     t.window.height = 650

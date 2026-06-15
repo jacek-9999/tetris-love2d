@@ -1,9 +1,11 @@
 -- Tetris Clone - A modular Tetris game in Lua using LÖVE2D
 -- Entry point for the game
+-- Compatible with LÖVE2D 11.5
 
 local GameLoop = require('core.GameLoop')
 
 local game = nil
+local canvas = nil
 
 function love.load(arg)
     math.randomseed(os.time())
@@ -11,21 +13,17 @@ function love.load(arg)
     local windowWidth = 600
     local windowHeight = 650
     
-    if arg and #arg > 0 then
-        for i, v in ipairs(arg) do
-            if v == '--fullscreen' then
-                love.window.setMode(0, 0, {fullscreen = true})
-                return
-            end
-        end
-    end
-    
     love.window.setMode(windowWidth, windowHeight, {
         resizable = false,
-        centered = true
+        centered = true,
+        minwidth = 400,
+        minheight = 400
     })
     
     love.window.setTitle('Tetris Clone')
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    
+    canvas = love.graphics.newCanvas(windowWidth, windowHeight)
     
     game = GameLoop.new()
     game:run()
@@ -38,20 +36,20 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
+    
     if game then
         game:draw()
     end
+    
+    love.graphics.setCanvas()
+    love.graphics.draw(canvas)
 end
 
 function love.keypressed(key, scancode, isrepeat)
     if game then
         game:keyPressed(key)
-    end
-    
-    if key == 'escape' then
-        if game and game:getGameState():getStateName() ~= 'menu' then
-            -- Let the state handle escape
-        end
     end
 end
 
