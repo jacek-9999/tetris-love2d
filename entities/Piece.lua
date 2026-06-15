@@ -67,13 +67,17 @@ function Piece:rotate(board, direction)
     return true
 end
 
-function Piece:isValidPosition(board)
+function Piece:isValidPosition(board, allowPartialSpawn)
+    local minRow = allowPartialSpawn and -1 or 0
     for r = 1, #self.matrix do
         for c = 1, #self.matrix[r] do
             if self.matrix[r][c] then
                 local row = self.boardRow + r - 1
                 local col = self.boardCol + c - 1
-                if not board:isCellEmpty(row, col) then
+                if row < minRow or row > board.height or col < 0 or col >= board.width then
+                    return false
+                end
+                if row >= 0 and not board:isCellEmpty(row, col) then
                     return false
                 end
             end

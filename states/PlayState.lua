@@ -160,7 +160,7 @@ function PlayState:spawnNextPiece()
     self.isLocking = false
     self.lockTimer = 0
     
-    if not self.currentPiece:isValidPosition(self.board) then
+    if not self.currentPiece:isValidPosition(self.board, true) then
         self.isGameOver = true
         print("[DEBUG] Game Over - spawned piece in invalid position")
         self.stateMachine:change('gameover')
