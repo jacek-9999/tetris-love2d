@@ -93,24 +93,23 @@ function PlayState:movePiece(dCol, dRow)
         self.currentPiece:move(-dRow, -dCol)
         return false
     end
-    if self.isLocking then
-        self.lockTimer = 0
-    end
     return true
 end
 
 function PlayState:rotatePiece(direction)
-    if self.currentPiece:rotate(self.board, direction) and self.isLocking then
+    local rotated = self.currentPiece:rotate(self.board, direction)
+    if rotated and self.isLocking then
         self.lockTimer = 0
     end
+    return rotated
 end
 
 function PlayState:dropPiece()
-    if not self:movePiece(0, 1) and not self.isLocking then
+    if self.isLocking then return end
+    
+    if not self:movePiece(0, 1) then
         self.isLocking = true
         self.lockTimer = 0
-    elseif self:movePiece(0, 1) then
-        self.isLocking = false
     end
 end
 
